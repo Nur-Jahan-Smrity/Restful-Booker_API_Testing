@@ -248,7 +248,7 @@ https://github.com/Nur-Jahan-Smrity/Restful-Booker_API_Testing/tree/main/newman
 
 ### Newman Run Dashboard Screenshot
 
-![Newman Run Dashboard](newman-dashboard.png)
+<img width="893" height="932" alt="Screenshot 2026-05-31 at 6 02 39 PM" src="https://github.com/user-attachments/assets/722f9d50-d146-4253-b527-d5bd523e3382" />)
 
 > This screenshot shows the latest Newman run dashboard with total requests, total assertions, failed tests, skipped tests, timing data, and overall execution summary.
 
