@@ -133,6 +133,7 @@ Restful-Booker_API_Testing/
 │   ├── First_Hands_on_API_Testing-2026-05-31-12-01-57-137-0.html
 │   └── newman-run-report-2026-05-31-12-01-47-776-0.html
 │
+├── newman-dashboard.png
 └── README.md
 ```
 
@@ -244,6 +245,12 @@ GitHub report location:
 ```text
 https://github.com/Nur-Jahan-Smrity/Restful-Booker_API_Testing/tree/main/newman
 ```
+
+### Newman Run Dashboard Screenshot
+
+![Newman Run Dashboard](newman-dashboard.png)
+
+> This screenshot shows the latest Newman run dashboard with total requests, total assertions, failed tests, skipped tests, timing data, and overall execution summary.
 
 ---
 
