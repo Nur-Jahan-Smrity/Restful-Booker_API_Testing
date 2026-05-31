@@ -1,0 +1,1424 @@
+{
+  "info": {
+    "_postman_id": "29f83ca6-44c2-4635-9a67-4f1a85db53b6",
+    "name": "First_Hands_on_API_Testing",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+    "_exporter_id": "44739470",
+    "_collection_link": "https://go.postman.co/collection/44739470-29f83ca6-44c2-4635-9a67-4f1a85db53b6?source=collection_link"
+  },
+  "item": [
+    {
+      "name": "GetBookingIds",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//assertion for status code",
+              "pm.test(\"The status code is 200\",  function(){",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 1000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+              "});",
+              "",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_Url}}/booking",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking"
+          ],
+          "query": [
+            {
+              "key": "email",
+              "value": "nurjahansmrity@gmail.com",
+              "disabled": true
+            },
+            {
+              "key": "testdata",
+              "value": "5",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "//library from - postman dynamic variables",
+              "//Generate first name.",
+              "var firstName = pm.variables.replaceIn('{{$randomFirstName}}');",
+              "//console.log(firstName);",
+              "pm.environment.set(\"fname\", firstName);",
+              "//Generate last name.",
+              "var lastName = pm.variables.replaceIn('{{$randomLastName}}');",
+              "pm.environment.set(\"lname\", lastName);",
+              "//Generate total price.",
+              "var totalPrice = pm.variables.replaceIn('{{$randomInt}}');",
+              "pm.environment.set(\"tPrice\", totalPrice);",
+              "//Generate deposite paid.",
+              "var depositePaid = pm.variables.replaceIn('{{$randomBoolean}}');",
+              "pm.environment.set(\"deposit_paid\", depositePaid);",
+              "//check in date",
+              "var checkIn = require('moment');",
+              "//console.log(checkIn);",
+              "var checkInData = checkIn().format('YYYY-MM-DD');",
+              "//console.log(checkInData);",
+              "pm.environment.set(\"checkin\",checkInData);",
+              "//check out date",
+              "var checkOut = require('moment');",
+              "//console.log(checkIn);",
+              "var checkOutData = checkOut().add(4,'days').format('YYYY-MM-DD');",
+              "//console.log(checkOutData);",
+              "pm.environment.set(\"checkout\",checkOutData);",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "// var responseBody = pm.response.json();",
+              "// pm.environment.set(\"id\", responseBody.bookingid);",
+              "",
+              "// /* =========================",
+              "//    1. BASIC RESPONSE TESTS",
+              "// ========================= */",
+              "",
+              "// pm.test(\"Status code is 201\", function () {",
+              "//     pm.expect(pm.response.code).to.eql(201);",
+              "// });",
+              "// pm.test(\"Response time is below 10000ms\", function () {",
+              "//     pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "// });",
+              "// pm.test(\"Response size is below 5000000 bytes\", function () {",
+              "//     pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "// });",
+              "",
+              "",
+              "// /* =========================",
+              "//    2. SAFETY CHECK (AVOID CRASH)",
+              "// ========================= */",
+              "",
+              "// pm.test(\"Booking object exists\", function () {",
+              "//     pm.expect(responseBody.booking).to.exist;",
+              "// });",
+              "// pm.test(\"Response data format is showing as JSON\", function(){",
+              "//     pm.response.to.have.jsonBody();",
+              "// });",
+              "// /* =========================",
+              "//    3. TOP LEVEL VALIDATION",
+              "// ========================= */",
+              "",
+              "// pm.test(\"bookingid exists\", function () {",
+              "//     pm.expect(responseBody.bookingid).to.exist;",
+              "// });",
+              "",
+              "",
+              "// /* =========================",
+              "//    4. FIELD PRESENCE",
+              "// ========================= */",
+              "",
+              "// pm.test(\"All booking fields are present\", function () {",
+              "//     pm.expect(responseBody.booking).to.have.all.keys(",
+              "//         \"firstname\",",
+              "//         \"lastname\",",
+              "//         \"totalprice\",",
+              "//         \"depositpaid\",",
+              "//         \"bookingdates\",",
+              "//         \"additionalneeds\"",
+              "//     );",
+              "// });",
+              "",
+              "",
+              "// /* =========================",
+              "//    5. DATA TYPE VALIDATION",
+              "// ========================= */",
+              "",
+              "// pm.test(\"Field types are valid\", function () {",
+              "//     pm.expect(responseBody.booking.firstname).to.be.a(\"string\");",
+              "//     pm.expect(responseBody.booking.lastname).to.be.a(\"string\");",
+              "//     pm.expect(responseBody.booking.totalprice).to.be.a(\"number\");",
+              "//     pm.expect(responseBody.booking.depositpaid).to.be.a(\"boolean\");",
+              "//     pm.expect(responseBody.booking.bookingdates).to.be.an(\"object\");",
+              "//     pm.expect(responseBody.booking.additionalneeds).to.be.a(\"string\");",
+              "// });",
+              "",
+              "",
+              "// /* =========================",
+              "//    6. VALUE VALIDATION (ENV VARIABLES)",
+              "// ========================= */",
+              "",
+              "// pm.test(\"First name matches\", function () {",
+              "//     pm.expect(pm.environment.get(\"fname\")).to.eql(responseBody.booking.firstname);",
+              "// });",
+              "",
+              "// pm.test(\"Last name matches\", function () {",
+              "//     pm.expect(pm.environment.get(\"lname\")).to.eql(responseBody.booking.lastname);",
+              "// });",
+              "",
+              "// pm.test(\"Total price matches\", function () {",
+              "//     pm.expect(Number(pm.environment.get(\"tPrice\"))).to.eql(responseBody.booking.totalprice);",
+              "// });",
+              "",
+              "// pm.test(\"Deposit paid matches\", function () {",
+              "//     pm.expect(JSON.parse(pm.environment.get(\"deposit_paid\"))).to.eql(responseBody.booking.depositpaid);",
+              "// });",
+              "",
+              "// pm.test(\"Checkin matches\", function () {",
+              "//     pm.expect(pm.environment.get(\"checkin\")).to.eql(responseBody.booking.bookingdates.checkin);",
+              "// });",
+              "",
+              "// pm.test(\"Checkout matches\", function () {",
+              "//     pm.expect(pm.environment.get(\"checkout\")).to.eql(responseBody.booking.bookingdates.checkout);",
+              "// });",
+              "",
+              "// pm.test(\"Additional needs matches\", function () {",
+              "//     pm.expect(pm.environment.get(\"needs\")).to.eql(responseBody.booking.additionalneeds);",
+              "// });",
+              "",
+              "",
+              "// /* =========================",
+              "//    7. BUSINESS VALIDATION",
+              "// ========================= */",
+              "",
+              "// pm.test(\"Total price is positive\", function () {",
+              "//     pm.expect(responseBody.booking.totalprice).to.be.above(0);",
+              "// });",
+              "",
+              "// pm.test(\"Checkout is after checkin\", function () {",
+              "",
+              "//     let checkin = new Date(responseBody.booking.bookingdates.checkin);",
+              "//     let checkout = new Date(responseBody.booking.bookingdates.checkout);",
+              "",
+              "//     pm.expect(checkout).to.be.above(checkin);",
+              "// });",
+              "",
+              "/* =========================",
+              "   GET BOOKING TEST SCRIPT",
+              "========================= */",
+              "",
+              "/* =========================",
+              "   CREATE BOOKING TEST SCRIPT",
+              "========================= */",
+              "",
+              "var responseBody = pm.response.json();",
+              "pm.environment.set(\"id\", responseBody.bookingid);",
+              "",
+              "console.log(\"Saved booking id:\", responseBody.bookingid);",
+              "",
+              "/* =========================",
+              "   1. BASIC RESPONSE TESTS",
+              "========================= */",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is below 10000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "pm.test(\"Response size is below 5000000 bytes\", function () {",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "",
+              "pm.test(\"Response data format is showing as JSON\", function () {",
+              "    pm.response.to.have.jsonBody();",
+              "});",
+              "",
+              "/* =========================",
+              "   2. SAFETY CHECK",
+              "========================= */",
+              "",
+              "pm.test(\"Booking object exists\", function () {",
+              "    pm.expect(responseBody.booking).to.exist;",
+              "});",
+              "",
+              "/* =========================",
+              "   3. TOP LEVEL VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"bookingid exists\", function () {",
+              "    pm.expect(responseBody.bookingid).to.exist;",
+              "});",
+              "",
+              "/* =========================",
+              "   4. FIELD PRESENCE",
+              "========================= */",
+              "",
+              "pm.test(\"All booking fields are present\", function () {",
+              "    pm.expect(responseBody.booking).to.have.all.keys(",
+              "        \"firstname\",",
+              "        \"lastname\",",
+              "        \"totalprice\",",
+              "        \"depositpaid\",",
+              "        \"bookingdates\",",
+              "        \"additionalneeds\"",
+              "    );",
+              "});",
+              "",
+              "/* =========================",
+              "   5. DATA TYPE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Field types are valid\", function () {",
+              "    pm.expect(responseBody.booking.firstname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.booking.lastname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.booking.totalprice).to.be.a(\"number\");",
+              "    pm.expect(responseBody.booking.depositpaid).to.be.a(\"boolean\");",
+              "    pm.expect(responseBody.booking.bookingdates).to.be.an(\"object\");",
+              "    pm.expect(responseBody.booking.additionalneeds).to.be.a(\"string\");",
+              "});",
+              "",
+              "/* =========================",
+              "   6. SAVE ENV VARIABLES",
+              "========================= */",
+              "",
+              "pm.environment.set(\"fname\", responseBody.booking.firstname);",
+              "pm.environment.set(\"lname\", responseBody.booking.lastname);",
+              "pm.environment.set(\"tPrice\", responseBody.booking.totalprice);",
+              "pm.environment.set(\"deposit_paid\", JSON.stringify(responseBody.booking.depositpaid));",
+              "pm.environment.set(\"checkin\", responseBody.booking.bookingdates.checkin);",
+              "pm.environment.set(\"checkout\", responseBody.booking.bookingdates.checkout);",
+              "pm.environment.set(\"needs\", responseBody.booking.additionalneeds);",
+              "",
+              "console.log(\"Saved firstname:\", responseBody.booking.firstname);",
+              "console.log(\"Saved lastname:\", responseBody.booking.lastname);",
+              "console.log(\"Saved total price:\", responseBody.booking.totalprice);",
+              "",
+              "/* =========================",
+              "   7. VALUE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"First name matches\", function () {",
+              "    pm.expect(pm.environment.get(\"fname\")).to.eql(responseBody.booking.firstname);",
+              "});",
+              "",
+              "pm.test(\"Last name matches\", function () {",
+              "    pm.expect(pm.environment.get(\"lname\")).to.eql(responseBody.booking.lastname);",
+              "});",
+              "",
+              "pm.test(\"Total price matches\", function () {",
+              "    pm.expect(Number(pm.environment.get(\"tPrice\"))).to.eql(responseBody.booking.totalprice);",
+              "});",
+              "",
+              "pm.test(\"Deposit paid matches\", function () {",
+              "    pm.expect(JSON.parse(pm.environment.get(\"deposit_paid\"))).to.eql(responseBody.booking.depositpaid);",
+              "});",
+              "",
+              "pm.test(\"Checkin matches\", function () {",
+              "    pm.expect(pm.environment.get(\"checkin\")).to.eql(responseBody.booking.bookingdates.checkin);",
+              "});",
+              "",
+              "pm.test(\"Checkout matches\", function () {",
+              "    pm.expect(pm.environment.get(\"checkout\")).to.eql(responseBody.booking.bookingdates.checkout);",
+              "});",
+              "",
+              "pm.test(\"Additional needs matches\", function () {",
+              "    pm.expect(pm.environment.get(\"needs\")).to.eql(responseBody.booking.additionalneeds);",
+              "});",
+              "",
+              "/* =========================",
+              "   8. BUSINESS VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Total price is positive\", function () {",
+              "    pm.expect(responseBody.booking.totalprice).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Checkout is after checkin\", function () {",
+              "    let checkin = new Date(responseBody.booking.bookingdates.checkin);",
+              "    let checkout = new Date(responseBody.booking.bookingdates.checkout);",
+              "",
+              "    pm.expect(checkout).to.be.above(checkin);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"{{fname}}\",\n    \"lastname\": \"{{lname}}\",\n    \"totalprice\": {{tPrice}},\n    \"depositpaid\": {{deposit_paid}},\n    \"bookingdates\": {\n        \"checkin\": \"{{checkin}}\",\n        \"checkout\": \"{{checkout}}\"\n    },\n    \"additionalneeds\" : \"{{needs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_Url}}/booking",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//assertion for status code",
+              "pm.test(\"The status code should be 404 as it has been deleted\",  function(){",
+              "    pm.expect(pm.response.code).to.eql(404);",
+              "});",
+              "",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 10000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "CreateToken",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "pm.environment.set(\"token\", responseBody.token);",
+              "//assertion for status code",
+              "pm.test(\"Status code is 200 or 201\", function () {",
+              "    pm.expect(pm.response.code).to.be.oneOf([200, 201]);",
+              "});",
+              "",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 1000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(1000);",
+              "});",
+              "",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "",
+              "pm.test(\"Response data format is showing as JSON or not\", function(){",
+              "    pm.response.to.have.jsonBody();",
+              "});",
+              "",
+              "pm.test(\"Token is present in the response\", function(){",
+              "    pm.expect(responseBody.token).to.exist;",
+              "});",
+              "pm.test(\"Field types are valid\", function () {",
+              "    let b = responseBody;",
+              "    pm.expect(b.token).to.be.a(\"string\");",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"username\" : \"admin\",\n    \"password\" : \"password123\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_Url}}/auth",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "auth"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "",
+              "/* =========================",
+              "   1. BASIC RESPONSE TESTS",
+              "========================= */",
+              "//assertion for status code",
+              "pm.test(\"The status code is 200\",  function(){",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 10000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "/* =========================",
+              "   2. FIELD PRESENCE TESTS",
+              "========================= */",
+              "",
+              "pm.test(\"All required fields are present\", function () {",
+              "    pm.expect(responseBody).to.have.all.keys(",
+              "        \"firstname\",",
+              "        \"lastname\",",
+              "        \"totalprice\",",
+              "        \"depositpaid\",",
+              "        \"bookingdates\",",
+              "        \"additionalneeds\"",
+              "    );",
+              "});",
+              "",
+              "",
+              "",
+              "/* =========================",
+              "   3. VALUE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Names are not empty\", function () {",
+              "    pm.expect(responseBody.firstname).to.not.be.empty;",
+              "    pm.expect(responseBody.lastname).to.not.be.empty;",
+              "});",
+              "pm.test(\"Total price is positive\", function () {",
+              "    pm.expect(responseBody.totalprice).to.be.above(0);",
+              "});",
+              "pm.test(\"Verify first name matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"fname\")).to.eql(responseBody.firstname);",
+              "});",
+              "pm.test(\"Verify last name matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"lname\")).to.eql(responseBody.lastname);",
+              "});",
+              "pm.test(\"Verify total price matches expected result\", function () {",
+              "    pm.expect(Number(pm.environment.get(\"tPrice\"))).to.eql(responseBody.totalprice);",
+              "});",
+              "pm.test(\"Verify deposit paid matches expected result\", function () {",
+              "    pm.expect(JSON.parse(pm.environment.get(\"deposit_paid\"))).to.eql(responseBody.depositpaid);",
+              "});",
+              "pm.test(\"Verify checkin date matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"checkin\")).to.eql(responseBody.bookingdates.checkin);",
+              "});",
+              "pm.test(\"Verify checkout date matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"checkout\")).to.eql(responseBody.bookingdates.checkout);",
+              "});",
+              "pm.test(\"Verify additional needs matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"needs\")).to.eql(responseBody.additionalneeds);",
+              "});",
+              "",
+              "/* =========================",
+              "   4. DATA TYPE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Field types are valid\", function () {",
+              "    pm.expect(responseBody.firstname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.lastname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.totalprice).to.be.a(\"number\");",
+              "    pm.expect(responseBody.depositpaid).to.be.a(\"boolean\");",
+              "    pm.expect(responseBody.bookingdates).to.be.an(\"object\");",
+              "    pm.expect(responseBody.additionalneeds).to.be.a(\"string\");",
+              "});",
+              "",
+              "/* =========================",
+              "   5. BOOKING DATES VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Booking dates structure is correct\", function () {",
+              "    pm.expect(responseBody.bookingdates).to.have.all.keys(\"checkin\", \"checkout\");",
+              "});",
+              "//Regex (Regular Expression) is a pattern used to search, match, or validate text.",
+              "// | Part    | Meaning                        |",
+              "// | ------- | ------------------------------ |",
+              "// | `^`     | Start of the string            |",
+              "// | `\\d{4}` | Exactly 4 digits (Year) → 2024 |",
+              "// | `-`     | Dash                           |",
+              "// | `\\d{2}` | 2 digits (Month) → 01–12       |",
+              "// | `-`     | Dash                           |",
+              "// | `\\d{2}` | 2 digits (Day) → 01–31         |",
+              "// | `$`     | End of the string              |",
+              "",
+              "pm.test(\"Dates format is valid (YYYY-MM-DD)\", function () {",
+              "    pm.expect(responseBody.bookingdates.checkin).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "    pm.expect(responseBody.bookingdates.checkout).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "});",
+              "",
+              "pm.test(\"Checkout date is after checkin date\", function () {",
+              "    let checkin = new Date(responseBody.bookingdates.checkin);",
+              "    let checkout = new Date(responseBody.bookingdates.checkout);",
+              "",
+              "    pm.expect(checkout).to.be.above(checkin);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   6. BUSINESS RULE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Deposit paid is boolean\", function () {",
+              "    pm.expect(responseBody.depositpaid).to.be.oneOf([true, false]);",
+              "});",
+              "",
+              "pm.test(\"Additional needs is valid string\", function () {",
+              "    pm.expect(responseBody.additionalneeds).to.be.a(\"string\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "protocolProfileBehavior": {
+        "disableBodyPruning": true
+      },
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ],
+          "query": [
+            {
+              "key": "id",
+              "value": "string",
+              "description": "The id of the booking you would like to retrieve\n\n",
+              "disabled": true
+            }
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateBooking",
+      "event": [
+        {
+          "listen": "prerequest",
+          "script": {
+            "exec": [
+              "//library from - postman dynamic variables",
+              "//here kept the similar variable name so that new variable doesnot occupies space unnecessarily.",
+              "//Generate first name.",
+              "var firstName = pm.variables.replaceIn('{{$randomFirstName}}');",
+              "console.log(firstName);",
+              "pm.environment.set(\"fname\", firstName);",
+              "//Generate last name.",
+              "var lastName = pm.variables.replaceIn('{{$randomLastName}}');",
+              "pm.environment.set(\"lname\", lastName);",
+              "//Generate total price.",
+              "var totalPrice = pm.variables.replaceIn('{{$randomInt}}');",
+              "pm.environment.set(\"tPrice\", totalPrice);",
+              "//Generate deposite paid.",
+              "var depositePaid = pm.variables.replaceIn('{{$randomBoolean}}');",
+              "pm.environment.set(\"deposit_paid\", depositePaid);",
+              "//check in date",
+              "var checkIn = require('moment');",
+              "console.log(checkIn);",
+              "var checkInData = checkIn().format('YYYY-MM-DD');",
+              "console.log(checkInData);",
+              "pm.environment.set(\"checkin\",checkInData);",
+              "//check out date",
+              "var checkOut = require('moment');",
+              "console.log(checkIn);",
+              "var checkOutData = checkOut().add(4,'days').format('YYYY-MM-DD');",
+              "console.log(checkOutData);",
+              "pm.environment.set(\"checkout\",checkOutData);",
+              "//Generate random needs.",
+              "var additional_needs = pm.variables.replaceIn('{{$randomBsNoun}}');",
+              "pm.environment.set(\"needs\", additional_needs);"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        },
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "",
+              "/* =========================",
+              "   1. BASIC RESPONSE TESTS",
+              "========================= */",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is below 10000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "pm.test(\"Response size is below 5000000 bytes\", function () {",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   2. SAFETY CHECK",
+              "========================= */",
+              "",
+              "pm.test(\"Response format is JSON\", function () {",
+              "    pm.response.to.have.jsonBody();",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   3. FIELD PRESENCE",
+              "========================= */",
+              "",
+              "pm.test(\"All booking fields are present\", function () {",
+              "    pm.expect(responseBody).to.have.all.keys(",
+              "        \"firstname\",",
+              "        \"lastname\",",
+              "        \"totalprice\",",
+              "        \"depositpaid\",",
+              "        \"bookingdates\",",
+              "        \"additionalneeds\"",
+              "    );",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   4. DATA TYPE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Field types are valid\", function () {",
+              "    pm.expect(responseBody.firstname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.lastname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.totalprice).to.be.a(\"number\");",
+              "    pm.expect(responseBody.depositpaid).to.be.a(\"boolean\");",
+              "    pm.expect(responseBody.bookingdates).to.be.an(\"object\");",
+              "    pm.expect(responseBody.bookingdates.checkin).to.be.a(\"string\");",
+              "    pm.expect(responseBody.bookingdates.checkout).to.be.a(\"string\");",
+              "    pm.expect(responseBody.additionalneeds).to.be.a(\"string\");",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   5. VALUE VALIDATION (ENV VARIABLES)",
+              "========================= */",
+              "",
+              "pm.test(\"First name matches\", function () {",
+              "    pm.expect(pm.environment.get(\"fname\")).to.eql(responseBody.firstname);",
+              "});",
+              "",
+              "pm.test(\"Last name matches\", function () {",
+              "    pm.expect(pm.environment.get(\"lname\")).to.eql(responseBody.lastname);",
+              "});",
+              "",
+              "pm.test(\"Total price matches\", function () {",
+              "    pm.expect(Number(pm.environment.get(\"tPrice\"))).to.eql(responseBody.totalprice);",
+              "});",
+              "",
+              "pm.test(\"Deposit paid matches\", function () {",
+              "    pm.expect(JSON.parse(pm.environment.get(\"deposit_paid\"))).to.eql(responseBody.depositpaid);",
+              "});",
+              "",
+              "pm.test(\"Checkin matches\", function () {",
+              "    pm.expect(pm.environment.get(\"checkin\")).to.eql(responseBody.bookingdates.checkin);",
+              "});",
+              "",
+              "pm.test(\"Checkout matches\", function () {",
+              "    pm.expect(pm.environment.get(\"checkout\")).to.eql(responseBody.bookingdates.checkout);",
+              "});",
+              "",
+              "pm.test(\"Additional needs matches\", function () {",
+              "    pm.expect(pm.environment.get(\"needs\")).to.eql(responseBody.additionalneeds);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   6. FORMAT VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Dates format is valid (YYYY-MM-DD)\", function () {",
+              "    pm.expect(responseBody.bookingdates.checkin).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "    pm.expect(responseBody.bookingdates.checkout).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   7. BUSINESS VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Total price is positive\", function () {",
+              "    pm.expect(responseBody.totalprice).to.be.above(0);",
+              "});",
+              "",
+              "pm.test(\"Checkout is after checkin\", function () {",
+              "    let checkin = new Date(responseBody.bookingdates.checkin);",
+              "    let checkout = new Date(responseBody.bookingdates.checkout);",
+              "    pm.expect(checkout).to.be.above(checkin);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token= {{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\": \"{{fname}}\",\n    \"lastname\": \"{{lname}}\",\n    \"totalprice\": {{tPrice}},\n    \"depositpaid\": {{deposit_paid}},\n    \"bookingdates\": {\n        \"checkin\": \"{{checkin}}\",\n        \"checkout\": \"{{checkout}}\"\n    },\n    \"additionalneeds\" : \"{{needs}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "UpdateBooking",
+      "request": {
+        "method": "PUT",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token=5b5ae61687d9acf",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\" : \"Nur jahan\",\n    \"lastname\" : \"Smrity\",\n    \"totalprice\" : 111,\n    \"depositpaid\" : true,\n    \"bookingdates\" : {\n        \"checkin\" : \"2018-01-01\",\n        \"checkout\" : \"2019-01-01\"\n    },\n    \"additionalneeds\" : \"Breakfast\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "https://restful-booker.herokuapp.com/booking/4466\n",
+          "protocol": "https",
+          "host": [
+            "restful-booker",
+            "herokuapp",
+            "com"
+          ],
+          "path": [
+            "booking",
+            "4466\n"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "",
+              "/* =========================",
+              "   1. BASIC RESPONSE TESTS",
+              "========================= */",
+              "//assertion for status code",
+              "pm.test(\"The status code is 200\",  function(){",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 10000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "/* =========================",
+              "   2. FIELD PRESENCE TESTS",
+              "========================= */",
+              "",
+              "pm.test(\"All required fields are present\", function () {",
+              "    pm.expect(responseBody).to.have.all.keys(",
+              "        \"firstname\",",
+              "        \"lastname\",",
+              "        \"totalprice\",",
+              "        \"depositpaid\",",
+              "        \"bookingdates\",",
+              "        \"additionalneeds\"",
+              "    );",
+              "});",
+              "",
+              "",
+              "",
+              "/* =========================",
+              "   3. VALUE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Names are not empty\", function () {",
+              "    pm.expect(responseBody.firstname).to.not.be.empty;",
+              "    pm.expect(responseBody.lastname).to.not.be.empty;",
+              "});",
+              "pm.test(\"Total price is positive\", function () {",
+              "    pm.expect(responseBody.totalprice).to.be.above(0);",
+              "});",
+              "pm.test(\"Verify first name matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"fname\")).to.eql(responseBody.firstname.toString());",
+              "});",
+              "pm.test(\"Verify last name matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"lname\")).to.eql(responseBody.lastname);",
+              "});",
+              "pm.test(\"Verify total price matches expected result\", function () {",
+              "    pm.expect(Number(pm.environment.get(\"tPrice\"))).to.eql(responseBody.totalprice);",
+              "});",
+              "pm.test(\"Verify deposit paid matches expected result\", function () {",
+              "    pm.expect(JSON.parse(pm.environment.get(\"deposit_paid\"))).to.eql(responseBody.depositpaid);",
+              "});",
+              "pm.test(\"Verify checkin date matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"checkin\")).to.eql(responseBody.bookingdates.checkin);",
+              "});",
+              "pm.test(\"Verify checkout date matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"checkout\")).to.eql(responseBody.bookingdates.checkout);",
+              "});",
+              "pm.test(\"Verify additional needs matches expected result\", function () {",
+              "    pm.expect(pm.environment.get(\"needs\")).to.eql(responseBody.additionalneeds);",
+              "});",
+              "",
+              "/* =========================",
+              "   4. DATA TYPE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Field types are valid\", function () {",
+              "    pm.expect(responseBody.firstname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.lastname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.totalprice).to.be.a(\"number\");",
+              "    pm.expect(responseBody.depositpaid).to.be.a(\"boolean\");",
+              "    pm.expect(responseBody.bookingdates).to.be.an(\"object\");",
+              "    pm.expect(responseBody.additionalneeds).to.be.a(\"string\");",
+              "});",
+              "",
+              "/* =========================",
+              "   5. BOOKING DATES VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Booking dates structure is correct\", function () {",
+              "    pm.expect(responseBody.bookingdates).to.have.all.keys(\"checkin\", \"checkout\");",
+              "});",
+              "//Regex (Regular Expression) is a pattern used to search, match, or validate text.",
+              "// | Part    | Meaning                        |",
+              "// | ------- | ------------------------------ |",
+              "// | `^`     | Start of the string            |",
+              "// | `\\d{4}` | Exactly 4 digits (Year) → 2024 |",
+              "// | `-`     | Dash                           |",
+              "// | `\\d{2}` | 2 digits (Month) → 01–12       |",
+              "// | `-`     | Dash                           |",
+              "// | `\\d{2}` | 2 digits (Day) → 01–31         |",
+              "// | `$`     | End of the string              |",
+              "",
+              "pm.test(\"Dates format is valid (YYYY-MM-DD)\", function () {",
+              "    pm.expect(responseBody.bookingdates.checkin).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "    pm.expect(responseBody.bookingdates.checkout).to.match(/^\\d{4}-\\d{2}-\\d{2}$/);",
+              "});",
+              "",
+              "pm.test(\"Checkout date is after checkin date\", function () {",
+              "    let checkin = new Date(responseBody.bookingdates.checkin);",
+              "    let checkout = new Date(responseBody.bookingdates.checkout);",
+              "",
+              "    pm.expect(checkout).to.be.above(checkin);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   6. BUSINESS RULE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Deposit paid is boolean\", function () {",
+              "    pm.expect(responseBody.depositpaid).to.be.oneOf([true, false]);",
+              "});",
+              "",
+              "pm.test(\"Additional needs is valid string\", function () {",
+              "    pm.expect(responseBody.additionalneeds).to.be.a(\"string\");",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "PartialUpdateBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "",
+              "/* =========================",
+              "   1. BASIC RESPONSE TESTS",
+              "========================= */",
+              "",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response time is below 10000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "pm.test(\"Response size is below 5000000 bytes\", function () {",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   2. SAFETY CHECK",
+              "========================= */",
+              "",
+              "pm.test(\"Response format is JSON\", function () {",
+              "    pm.response.to.have.jsonBody();",
+              "});",
+              "",
+              "/* =========================",
+              "   3. DATA TYPE VALIDATION",
+              "========================= */",
+              "",
+              "pm.test(\"Field types are valid\", function () {",
+              "    pm.expect(responseBody.firstname).to.be.a(\"string\");",
+              "    pm.expect(responseBody.lastname).to.be.a(\"string\");",
+              "});",
+              "",
+              "",
+              "/* =========================",
+              "   4. VALUE VALIDATION (ENV VARIABLES)",
+              "========================= */",
+              "",
+              "pm.test(\"Firstname updated correctly\", function () {",
+              "    pm.expect(responseBody.firstname).to.eql(pm.environment.get(\"fname\"));",
+              "});",
+              "",
+              "pm.test(\"Lastname updated correctly\", function () {",
+              "    pm.expect(responseBody.lastname).to.eql(pm.environment.get(\"lname\"));",
+              "});",
+              ""
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "PATCH",
+        "header": [
+          {
+            "key": "Accept",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token= {{token}}",
+            "type": "text"
+          }
+        ],
+        "body": {
+          "mode": "raw",
+          "raw": "{\n    \"firstname\" : \"{{fname}}\",\n    \"lastname\" : \"{{lname}}\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        },
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "DeleteBooking",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "//assertion for status code",
+              "pm.test(\"The status code should be 200\",  function(){",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "//assertion for response time",
+              "pm.test(\"The response time is below 10000ms\",  function(){",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "//assertion for response size",
+              "pm.test(\"The response file size is below 5000000 byte\",  function(){",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          },
+          {
+            "key": "Cookie",
+            "value": "token={{token}}",
+            "type": "text"
+          },
+          {
+            "key": "Authorization",
+            "value": "Basic",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{base_Url}}/booking/{{id}}",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking",
+            "{{id}}"
+          ]
+        }
+      },
+      "response": []
+    },
+    {
+      "name": "GetBookingIds",
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "exec": [
+              "var responseBody = pm.response.json();",
+              "",
+              "// =========================",
+              "// 1. BASIC VALIDATIONS",
+              "// =========================",
+              "pm.test(\"Response data format is showing as JSON\", function(){",
+              "    pm.response.to.have.jsonBody();",
+              "});",
+              "pm.test(\"Response is an array\", function () {",
+              "    pm.expect(responseBody).to.be.an(\"array\");",
+              "});",
+              "",
+              "pm.test(\"Response is not empty\", function () {",
+              "    pm.expect(responseBody.length).to.be.above(0);",
+              "});",
+              "// status, time and size doesn't fall under responsebody (payload()) so we can't use pm.expect(responseBody).to.have.property(\"status\"). we should use response instead of responseBody..",
+              "//pm.response → \"HOW the API responded\"",
+              "//responseBody → \"WHAT the API returned\"",
+              "pm.test(\"Status code is 200\", function () {",
+              "    pm.expect(pm.response.code).to.eql(200);",
+              "});",
+              "",
+              "pm.test(\"Response time < 10000ms\", function () {",
+              "    pm.expect(pm.response.responseTime).to.be.below(10000);",
+              "});",
+              "",
+              "pm.test(\"Response size is within limit\", function () {",
+              "    pm.expect(pm.response.responseSize).to.be.below(5000000);",
+              "});",
+              "",
+              "",
+              "// =========================",
+              "// 2. FIELD VALIDATION",
+              "// =========================",
+              "pm.test(\"Verify that the booking id 70 exists\", function(){",
+              "    var exists=responseBody.some(item => item.bookingid === 70);",
+              "    pm.expect(exists).to.eql(true);",
+              "})",
+              "pm.test(\"Each item has bookingid\", function () {",
+              "    responseBody.forEach(item => {",
+              "        pm.expect(item).to.have.property(\"bookingid\");",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"bookingid is valid number\", function () {",
+              "    responseBody.forEach(item => {",
+              "        pm.expect(item.bookingid).to.be.a(\"number\");",
+              "    });",
+              "});",
+              "",
+              "pm.test(\"bookingid is positive\", function () {",
+              "    responseBody.forEach(item => {",
+              "        pm.expect(item.bookingid).to.be.above(0);",
+              "    });",
+              "});",
+              "",
+              "",
+              "// =========================",
+              "// 3. UNIQUENESS",
+              "// =========================",
+              "// map() → extract values",
+              "// Set → remove duplicates",
+              "// responseBody is an array like:",
+              "// .map() loops through each item and extracts only bookingid",
+              "// ids = [1, 2, 3]",
+              "// Remove duplicates using Set",
+              "// Set automatically removes duplicates",
+              "// after set Convert back to array:",
+              "// uniqueIds = [1, 2, 3]",
+              "// Compare lengths",
+              "pm.test(\"No duplicate booking IDs\", function () {",
+              "    let ids = responseBody.map(item => item.bookingid);",
+              "    let uniqueIds = [...new Set(ids)];",
+              "    pm.expect(ids.length).to.eql(uniqueIds.length);",
+              "});"
+            ],
+            "type": "text/javascript",
+            "packages": {},
+            "requests": {}
+          }
+        }
+      ],
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{base_Url}}/booking",
+          "host": [
+            "{{base_Url}}"
+          ],
+          "path": [
+            "booking"
+          ]
+        }
+      },
+      "response": []
+    }
+  ]
+}
